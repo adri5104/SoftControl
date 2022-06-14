@@ -29,8 +29,8 @@ def open_serial_port(serialObject):
 
     myBaudrate = select_baudrate()
     
-    serialObject.baudrate = myBaudrate
-    serialObject.port = "COM22"
+    serialObject.baudrate = 9600
+    serialObject.port = 'COM13'
     
     try:
         serialObject.open()
@@ -46,5 +46,7 @@ def open_serial_port(serialObject):
 def close_serial_port(serialObject):
     serialObject.close()
    
-
+mySerial = serial.Serial()
+_flag_serial_correctly_open =  open_serial_port(mySerial)
+13
 
