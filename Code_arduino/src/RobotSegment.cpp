@@ -4,29 +4,6 @@ using namespace Robot;
 
 
 
-void Valvula::init()
-{
-    pinMode(pin_32, OUTPUT);
-    pinMode(pin_22, OUTPUT);
-}
-
-void Valvula::alAire()
-{
-    digitalWrite(pin_32, LOW);
-    digitalWrite(pin_22, HIGH);
-}
-
-void Valvula::Presion()
-{
-    digitalWrite(pin_32, HIGH);
-    digitalWrite(pin_22, HIGH);
-}
-
-void Valvula::Cerrada()
-{
-    digitalWrite(pin_32, LOW);
-    digitalWrite(pin_22, LOW);
-}
 
 
 

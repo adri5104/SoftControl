@@ -5,6 +5,15 @@
 
 namespace Robot
 {
+
+    struct v_pinout
+    {
+        uint8_t pin_32;
+        uint8_t pin_22;
+    };
+
+    
+
     class stretchSensor
     {
         private:
@@ -54,4 +63,4 @@ namespace Robot
 
 
 
-#endif ROBOTSEGMENT_H
+#endif 
