@@ -177,7 +177,7 @@ void loop() {
       break;
 
       // llenar durante x ms
-      case 'd':
+      case 'f':
         num_valv = Serial.parseInt();
         x = Serial.parseInt();
         misValvulas[num_valv] -> fill_millis( (uint16_t) x );
@@ -252,6 +252,9 @@ void loop() {
               case 2:
                 misValvulas[i-1]->Presion();
                 break;
+
+              
+
             }
           }
         }
@@ -304,6 +307,7 @@ void loop() {
       break;
     }
   }
+
 
 
 
