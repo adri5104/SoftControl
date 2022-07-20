@@ -1,21 +1,14 @@
-classdef Robot
-    properties
-        BaudRate;
-        SerialPort;
+classdef Robot < handle
+    properties (Access = public)
         SerialDevice;
         NumValvulas;
+        millisSendedToValves;
+        tiempo_desinflado
     end
 
     methods
-        function this = Robot(SerialPort_,BaudRate_, num)
-            %Constructor
-            this.SerialPort = SerialPort_;
-            this.BaudRate = BaudRate_;
-            this.SerialDevice = serialport(this.SerialPort, this.BaudRate);
-            configureTerminator(this.SerialDevice,"CR/LF", "LF");
-            NumValvulas = num;
-            flush(this.SerialDevice);
-            millisSendedToValves = [0 0 0 0 0 0 0 0 0 ];
+        function this = Robot(SerialDevice_)
+            this.SerialDevice = SerialDevice_
         end
 
         function outputArg = method1(this,inputArg)
@@ -32,7 +25,7 @@ classdef Robot
         end
  
         
-
+        % Se envia presion a una valvula en concreto
         function writeOneValveMillis(this, valv, millis)
             if millis > 0
                 writeline(this.SerialDevice, "f," + int2str(valv) + "," + int2str(millis));
@@ -40,12 +33,16 @@ classdef Robot
                 writeline(this.SerialDevice, "e" + int2str(valv) + "," + int2str(-millis));
             end
 
-            this.
-
-            
-                
-
-            end
+            this.millisSendedToValves(valv) = this.millisSendedToValves(valv) + millis;
         end
+
+        function millis = getMillisSended(this)
+            millis = this.millisSendedToValves;
+
+        end
+
+        functi
+
+
     end
 end

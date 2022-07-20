@@ -3,19 +3,13 @@ classdef Robot < handle
         SerialDevice;
         NumValvulas;
         millisSendedToValves;
+        tiempo_desinflado = 1000;
     end
 
     methods
-        %function this = Robot(SerialPort_,BaudRate_, num)
-        %    %Constructor
-        %    this.SerialPort = SerialPort_;
-        %    this.BaudRate = BaudRate_;
-        %    this.SerialDevice = SerialPort_;
-        %    configureTerminator(this.SerialDevice,"CR/LF", "LF");
-        %    this.NumValvulas = num;
-        %    flush(this.SerialDevice);
-        %    this.millisSendedToValves = [0 0 0 0 0 0 0 0 0 ];
-        %end
+        function this = Robot(SerialDevice_)
+            this.SerialDevice = SerialDevice_
+        end
 
         function outputArg = method1(this,inputArg)
             %METHOD1 Summary of this method goes here
@@ -46,5 +40,9 @@ classdef Robot < handle
             millis = this.millisSendedToValves;
 
         end
+
+        
+
+
     end
 end
