@@ -28,7 +28,7 @@ function [x,y] = findPoint(rgb,color, debug)
         y = misRegiones.Location(1,2);
 
     else
-        rgb22
+        
 
         x = -1;
         y = -1;

@@ -6,23 +6,23 @@ end
 
 
 
-PRESION_MAX = 1000
+PRESION_MAX = 1500
 PRESION_MIN = 0
 COM = 'COM22'
 BAUDIOS = 9600
 GRADOS_LIBERTAD = 9
-TIEMPO_DESINFLADO = 2000;
-CAM1_NAME = 'XiaoMi USB 2.0 Webcam'; %webcamlist
+TIEMPO_DESINFLADO = 5;
+CAM1_NAME = 'DroidCam Source 3'; %webcamlist
 
 
-
+millisdesinflar = "w,1,-5000,-5000,-5000,-5000,-5000,-5000,-5000,-5000,-5000";
 
 % Comienzo script
 
 % Configuracion camara
 cam1 = webcam(CAM1_NAME);
 
-if DEBUG ~= 'y'
+if DEBUG == 'y'
     % Creamos objeto serial
     try
         obj = serialport(COM,BAUDIOS);
@@ -35,7 +35,7 @@ if DEBUG ~= 'y'
     configureTerminator(obj,"CR/LF", "LF");
     
     % Desinflamos
-    desinflar(obj, TIEMPO_DESINFLADO);
+    writeline(obj,millisdesinflar);
     pause(TIEMPO_DESINFLADO);
 end
 
@@ -57,10 +57,10 @@ for i = 1:NUM_POSICIONES
         data.inputs(i,j) = millis2send(j-1);
     end
 
-    if DEBUG ~= 'y'
+    if DEBUG == 'y'
         %Movemos a posicion indicada
         writeline(obj, string2send);
-        pause(2);
+        pause(max(millis2send)/1000);
     end
 
     %Aqui tomariamos foto
@@ -96,8 +96,8 @@ for i = 1:NUM_POSICIONES
     close();
     
 
-    if DEBUG ~= 'y'
-        	desinflar(obj, TIEMPO_DESINFLADO);
+    if DEBUG == 'y'
+        	writeline(obj,millisdesinflar)
             pause(TIEMPO_DESINFLADO);
     end
     
