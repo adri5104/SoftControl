@@ -11,19 +11,19 @@ function [BW,maskedRGBImage] = createMask(RGB)
 
 
 % Convert RGB image to chosen color space
-I = rgb2hsv(RGB);
+I = RGB;
 
 % Define thresholds for channel 1 based on histogram settings
 channel1Min = 0.000;
-channel1Max = 0.991;
+channel1Max = 255.000;
 
 % Define thresholds for channel 2 based on histogram settings
 channel2Min = 0.000;
-channel2Max = 1.000;
+channel2Max = 255.000;
 
 % Define thresholds for channel 3 based on histogram settings
 channel3Min = 0.000;
-channel3Max = 1.000;
+channel3Max = 255.000;
 
 % Create mask based on chosen histogram thresholds
 sliderBW = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
@@ -35,13 +35,6 @@ I = double(I);
 [m,n,~] = size(I);
 polyBW = false([m,n]);
 I = reshape(I,[m*n 3]);
-
-% Convert HSV color space to canonical coordinates
-Xcoord = I(:,2).*I(:,3).*cos(2*pi*I(:,1));
-Ycoord = I(:,2).*I(:,3).*sin(2*pi*I(:,1));
-I(:,1) = Xcoord;
-I(:,2) = Ycoord;
-clear Xcoord Ycoord
 
 % Project 3D data into 2D projected view from current camera view point within app
 J = rotateColorSpace(I);
@@ -63,14 +56,14 @@ end
 function J = rotateColorSpace(I)
 
 % Translate the data to the mean of the current image within app
-shiftVec = [0.022448 0.022464 0.521847];
+shiftVec = [186.800895 150.628132 112.139772];
 I = I - shiftVec;
 I = [I ones(size(I,1),1)]';
 
 % Apply transformation matrix
-tMat = [-0.583242 -3.559901 -0.000000 0.628264;
-    0.010102 -0.006269 1.072052 -0.501784;
-    1.829128 -1.135087 -0.005921 8.159580;
+tMat = [-0.002463 -0.001299 0.000000 0.655820;
+    -0.000217 0.000634 0.004014 -0.543987;
+    0.001025 -0.002988 0.000852 8.812272;
     0.000000 0.000000 0.000000 1.000000];
 
 J = (tMat*I)';
@@ -79,12 +72,11 @@ end
 function polyBW = applyPolygons(J,polyBW)
 
 % Define each manually generated ROI
-hPoints(1).data = [0.742722 -0.085646;
-    0.926522 -0.840301;
-    1.183843 -0.626841;
-    1.106981 -0.303418;
-    1.122020 -0.046836;
-    0.876395 -0.003713];
+hPoints(1).data = [0.573446 -0.195812;
+    1.086697 -0.865494;
+    1.268341 -0.883273;
+    1.207089 -0.418052;
+    0.928286 -0.183959];
 
 % Iteratively apply each ROI
 for ii = 1:length(hPoints)
