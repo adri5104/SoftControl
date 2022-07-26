@@ -10,7 +10,11 @@ function [x,y] = findPoint(rgb,color, debug)
         case 'p'
             [BW, ~] = imageThresholdPurple(rgb);
         case 'g'
-            [BW, ~] = imageThresholdPurple(rgb);
+            [BW, ~] = imageThresholdGreen(rgb);
+        case 'o'
+            [BW, ~] = imageThresholdOrange(rgb);
+        case 'n'
+            [BW, ~] = imageThresholdBlack(rgb);
     end
 
     % Detectamos las regiones
@@ -38,7 +42,7 @@ function [x,y] = findPoint(rgb,color, debug)
     if debug == 'y'
         figure;
         
-        %imshow(rgb);
+        imshow(rgb);
         pause(0.2);
         imshow(BW);
         hold on;
@@ -46,6 +50,7 @@ function [x,y] = findPoint(rgb,color, debug)
         plot(misRegiones);
         text(x,y, color);
         pause(0.2) 
+        close();
     end
 end
 

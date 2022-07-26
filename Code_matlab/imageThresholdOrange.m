@@ -1,4 +1,4 @@
-function [BW,maskedRGBImage] = createMask(RGB)
+function [BW,maskedRGBImage] = imageThresholdOrange(RGB)
 %createMask  Threshold RGB image using auto-generated code from colorThresholder app.
 %  [BW,MASKEDRGBIMAGE] = createMask(RGB) thresholds image RGB using
 %  auto-generated code from the colorThresholder app. The colorspace and
@@ -14,16 +14,16 @@ function [BW,maskedRGBImage] = createMask(RGB)
 I = rgb2lab(RGB);
 
 % Define thresholds for channel 1 based on histogram settings
-channel1Min = 3.117;
+channel1Min = 2.313;
 channel1Max = 100.000;
 
 % Define thresholds for channel 2 based on histogram settings
-channel2Min = -47.956;
-channel2Max = 22.201;
+channel2Min = -41.202;
+channel2Max = 22.414;
 
 % Define thresholds for channel 3 based on histogram settings
-channel3Min = -42.264;
-channel3Max = 44.362;
+channel3Min = -33.020;
+channel3Max = 48.184;
 
 % Create mask based on chosen histogram thresholds
 sliderBW = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
@@ -61,14 +61,14 @@ end
 function J = rotateColorSpace(I)
 
 % Translate the data to the mean of the current image within app
-shiftVec = [-2.040978 4.709056 54.888769];
+shiftVec = [-3.074282 3.955176 57.418758];
 I = I - shiftVec;
 I = [I ones(size(I,1),1)]';
 
 % Apply transformation matrix
-tMat = [0.000279 0.010641 0.000000 -0.512649;
-    0.002838 -0.000071 0.009324 -0.609677;
-    -0.010510 0.000263 0.002518 8.988963;
+tMat = [0.008505 0.008605 0.000000 -0.704862;
+    -0.000205 0.000151 0.009071 -0.498736;
+    -0.009979 0.007330 -0.000187 8.741180;
     0.000000 0.000000 0.000000 1.000000];
 
 J = (tMat*I)';
@@ -77,11 +77,10 @@ end
 function polyBW = applyPolygons(J,polyBW)
 
 % Define each manually generated ROI
-hPoints(1).data = [-0.672852 -0.512010;
-    -1.005529 -0.472416;
-    -1.019163 -0.601758;
-    -0.683760 -1.016184;
-    -0.629223 -0.997706];
+hPoints(1).data = [-0.514175 -0.331742;
+    -0.620869 -0.902205;
+    -0.082858 -0.848572;
+    -0.073778 -0.378061];
 
 % Iteratively apply each ROI
 for ii = 1:length(hPoints)
