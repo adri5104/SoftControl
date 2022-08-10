@@ -1,4 +1,4 @@
-function [x,y] = findPoint(rgb,color, debug)
+function point = findPoint(rgb,color, debug)
     
     if nargin < 3
         debug = 'x';
@@ -52,5 +52,7 @@ function [x,y] = findPoint(rgb,color, debug)
         pause(0.2) 
         close();
     end
+
+    point = [x,y];
 end
 
