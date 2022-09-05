@@ -1,19 +1,20 @@
 function [data] = calibracion(NUM_POSICIONES, camPar, DEBUG)
+tic
 
 if nargin < 2
     DEBUG = 'x';
 end
 
 % Algunos parametros
-PRESION_MAX = 700;
+PRESION_MAX = 1000;
 PRESION_MIN = 0;
 COM = 'COM22';
 BAUDIOS = 9600;
 NUM_SEGMENTOS = 3;
 GRADOS_LIBERTAD = 9;    
 TIEMPO_DESINFLADO = 2;
-CAMARA_YZ = 4;
-CAMARA_XZ = 2;
+CAMARA_YZ = 2;
+CAMARA_XZ = 4;
 millis2send_ = ones(NUM_SEGMENTOS);
 millisdesinflar = "w,1,-2000,-2000,-2000,-2000,-2000,-2000,-2000,-2000,-2000";
 
@@ -41,6 +42,9 @@ configureTerminator(obj,"CR/LF", "LF");
 % Desinflamos
 writeline(obj,millisdesinflar);
 pause(TIEMPO_DESINFLADO);
+
+data.pmax = PRESION_MAX;
+data.nummuestras = NUM_POSICIONES;
 
 % Para cada posicion
 for i = 1:NUM_POSICIONES
@@ -81,6 +85,11 @@ for i = 1:NUM_POSICIONES
     %Movemos a posicion indicada
     writeline(obj, string2send);
     pause(max(millis2send)/1000);
+
+    %for p = 1:GRADOS_LIBERTAD
+     %   writeOneValveMillis(obj,p, millis2send(p));
+     %   pause(1);
+    %end
     
     %Aqui tomariamos las foto
     img_yz = snapshot(cam_yz);
@@ -121,12 +130,15 @@ for i = 1:NUM_POSICIONES
     data.outputs.green(i,1:3) = green;
         
     writeline(obj,millisdesinflar)
-    pause(TIEMPO_DESINFLADO);
-end
+    pause(TIEMPO_DESINFLADO *2);
 
+    
+
+    disp(green);
+    disp(i);
+end
+toc
 delete(cam_yz);
 delete(cam_xz)
-if DEBUG ~= 'y'
-delete(obj);
-end
+delete(obj)
 end

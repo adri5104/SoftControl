@@ -39,6 +39,8 @@
         33, // 7
         31 // 8
     };
+
+    const uint8_t EMRGY_PIN = 9;
     
 
 

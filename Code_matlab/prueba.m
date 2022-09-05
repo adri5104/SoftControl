@@ -1,7 +1,7 @@
 
 
-camyz = webcam(4);
-camxz = webcam(2);
+camyz = webcam(2);
+camxz = webcam(4);
 
 [rotyz, transyz] = findCameraPose(camyz, cameraParams);
 [rotxz, transxz] = findCameraPose(camxz, cameraParams);
@@ -28,7 +28,7 @@ while(true)
 
     p = getCoordinates(yz, xz);
     scatter3(p(1), p(2), p(3), '*');
-    set(gca,'XLim',[-400 400],'YLim',[-400 400],'ZLim',[-400 400])
+    set(gca,'XLim',[-800 800],'YLim',[-800 800],'ZLim',[-800 800])
     %plot3(p(1), p(2), p(3), 'o');
     disp(p);
     

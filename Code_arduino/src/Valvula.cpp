@@ -8,7 +8,9 @@ void Valvula::init()
     pinMode(pin_22, OUTPUT);
 
     state = S_CLOSED;
+    actual_pressure = 0;
     timing_active = false;
+    emergency_halted = false;
 }
 
 void Valvula::alAire()
@@ -41,6 +43,10 @@ void Valvula::fill_millis(uint32_t time)
    timing_active = true;
    first_time = millis();
    final_time = time;
+
+   state = S_FILLING;
+   actual_pressure+= time;
+
 }
 
 void Valvula::emptyng_millis(u_int32_t time)
@@ -49,17 +55,28 @@ void Valvula::emptyng_millis(u_int32_t time)
     timing_active = true;
     first_time = millis();
     final_time = time;
+
+    state = S_EMPTYING;
+    actual_pressure = actual_pressure - ((int) ((float) (time * io_multiplier)));
 }
 
 void Valvula::callback()
 {
     if(timing_active)
     {
+        
         if(millis() - first_time > final_time)
         {
             this -> Cerrada();
             timing_active = false;
         }
+    }
+
+    if(actual_pressure > MAX_PRESSURE)
+    {
+        state = S_EMERGENCY_STOP;
+        this->alAire();
+        emergency_halted = true;
     }
 }
 

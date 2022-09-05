@@ -1,0 +1,22 @@
+function [data_filtered] = datafilter(data)
+
+
+j = 1;
+data_filtered.p = 1;
+
+
+for i = 1:200
+    
+    if data.outputs.green(i,1) > 400 || data.outputs.green(i,2) > 400 || data.outputs.green(i,3) > 400
+        continue
+    else
+        data_filtered.outputs.green(j, :) = data.outputs.green(i, :);
+        data_filtered.outputs.blue(j, :) = data.outputs.blue(i, :);
+        data_filtered.inputs(j,:) = data.inputs(i, :);
+        j = j+ 1;
+
+    end
+
+
+
+end

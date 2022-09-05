@@ -1,0 +1,18 @@
+
+function [pointReal] = getCoordinates(yz, xz, matyz, matxz, dx, xy, dz)
+
+%obtenemos punto en sistema de coordenadas de la imagen
+if yz(1) ~= -1 && yz(2) ~= -1 && xz(1) ~= -1 && xz(2) ~= -1
+    point = triangulate(yz,xz,matyz,matxz)
+else
+    pointReal = [-1, -1, -1];
+end
+
+
+
+
+
+
+
+
+end

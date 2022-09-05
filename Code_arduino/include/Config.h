@@ -22,6 +22,13 @@
 #define SCREEN_ADDRESS 0x3C // OLED I2C address
 #define OLED_RESET -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 
+enum modos
+{
+    S_NORMAL,
+    S_ERROR_STOPAUTO,
+    S_ERROR_PARADA_EMERGENCIA
+};
+
 
 
 
