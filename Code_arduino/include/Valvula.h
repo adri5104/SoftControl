@@ -49,7 +49,7 @@ class Valvula
 
             bool getEmergency()
             {
-                return emergency_halted;
+                return true;
             }
 
     };
