@@ -1,7 +1,6 @@
 function [rotation,translation] = findCameraPose(cam, cameraPar)
 
-
-
+% Tomamos imagen de calibracion
 img = snapshot(cam);
 
 % Corregimos distorsion de la lente
