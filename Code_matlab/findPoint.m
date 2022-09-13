@@ -1,18 +1,30 @@
-function point = findPoint(rgb,color, debug)
+function point = findPoint(rgb,color, camera, debug)
     
-    if nargin < 3
+    if nargin < 4
         debug = 'x';
     end
 
     switch color
         case 'b'   
-            [BW, ~] = imageThresholdBlue(rgb);
+            if camera == "yz"
+                [BW, ~] = imageThresholdBlue_yz(rgb);
+            else
+                [BW, ~] = imageThresholdBlue_xz(rgb);
+            end
         case 'p'
             [BW, ~] = imageThresholdPurple(rgb);
         case 'g'
-            [BW, ~] = imageThresholdGreen(rgb);
+            if camera == "yz"
+                [BW, ~] = imageThresholdGreen_yz(rgb);
+            else
+                [BW, ~] = imageThresholdGreen_xz(rgb);
+            end
         case 'o'
-            [BW, ~] = imageThresholdOrange(rgb);
+            if camera == "yz"
+                [BW, ~] = imageThresholdOrange_yz(rgb);
+            else
+                [BW, ~] = imageThresholdOrange_xz(rgb);
+            end
         case 'n'
             [BW, ~] = imageThresholdBlack(rgb);
     end
@@ -22,7 +34,7 @@ function point = findPoint(rgb,color, debug)
     
     % Filtramos por excentricidad
     stats = regionprops('table',mserCC,'Eccentricity');
-    eccentricityIdx = stats.Eccentricity < 0.55;
+    eccentricityIdx = stats.Eccentricity < 0.99;
     misRegiones = misRegiones(eccentricityIdx);
 
     % Comprobamos numero de regiones detectadas

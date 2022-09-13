@@ -1,18 +1,18 @@
-cam1 = webcam(2);
+cam1 = webcam("USB Camera");
 %cam2 = webcam(4);
 
 
 while(1 < 2)
     
-    img1 = snapshot(cam1);
+    img1 = snapshot(cam1) ;
     %img2 = snapshot(cam2);
 
     imshow(img1);
     hold on;
 
-    pb = findPoint(img1, 'b');
-    pg= findPoint(img1, 'g');
-    po = findPoint(img1, 'o');
+    pb = findPoint(img1, 'b', "xz");
+    pg= findPoint(img1, 'g', "xz");
+    po = findPoint(img1, 'o', "xz");
     
         plot([pb(1) pg(1)], [pb(2) pg(2)], 'r');
         plot([pb(1) po(1)], [pb(2) po(2)], 'r');

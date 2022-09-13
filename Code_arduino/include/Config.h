@@ -29,8 +29,9 @@ enum modos
     S_ERROR_PARADA_EMERGENCIA
 };
 
-
-
+const uint8_t LED_MAXV_R = 180;
+const uint8_t LED_MAXV_G = 255;
+const uint8_t LED_MAXV_B = 180;
 
 
 #endif // _CONFIG_H_

@@ -50,7 +50,12 @@ void setup()
   Display_init(display);
   Display_println(display, "Hello, world!");
   
-  attachInterrupt(digitalPinToInterrupt( EMRGY_PIN), emergency_stop_callback, CHANGE);
+  pinMode(PIN_LED_R, OUTPUT);
+  pinMode(PIN_LED_G, OUTPUT);
+  pinMode(PIN_LED_B, OUTPUT);
+
+
+  //attachInterrupt(digitalPinToInterrupt( EMRGY_PIN), emergency_stop_callback, CHANGE);
   pinMode(EMRGY_PIN, INPUT_PULLUP);
 
 
@@ -95,6 +100,7 @@ void setup()
   Serial.println("Calibration done");
 
   t = millis();
+  State = S_NORMAL;
   // delay(1000);
 }
 
@@ -102,59 +108,7 @@ void loop()
 {
   if(State == S_NORMAL)
   {
-  // ############# serial #############
-
-  /*
-  if(Serial1.available() > 0)
-  {
-    static char op = ' ';
-    op = Serial1.read();
-    int num_valv;
-    int x;
-    switch(op)
-    {
-      // abrir valvula
-      case 'a':
-        num_valv = Serial1.parseInt();
-        if(num_valv && num_valv < NUM_VALVULAS) misValvulas[num_valv] -> alAire();
-      break;
-
-      // cerrar valvula
-      case 'b':
-        num_valv = Serial1.parseInt();
-        if(num_valv && num_valv < NUM_VALVULAS) misValvulas[num_valv] -> Cerrada();
-      break;
-
-      // a presion
-      case 'c':
-        num_valv = Serial1.parseInt();
-        if(num_valv && num_valv < NUM_VALVULAS) misValvulas[num_valv] -> Presion();
-      break;
-
-      // llenar durante x ms
-      case 'd':
-        num_valv = Serial1.parseInt();
-        x = Serial1.parseInt();
-        if(num_valv && num_valv < NUM_VALVULAS) misValvulas[num_valv] -> fill_millis( (uint16_t) x );
-      break;
-
-      // vaciar durante x ms
-      case 'e':
-        num_valv = Serial1.parseInt();
-        x = Serial1.parseInt();
-        if(num_valv && num_valv < NUM_VALVULAS) misValvulas[num_valv] -> emptyng_millis( (uint16_t) x );
-      break;
-
-      case 'l':
-        digitalWrite(13, HIGH);
-      break;
-
-      case 'k':
-        digitalWrite(13, LOW);
-      break;
-
-    }
-    */
+  
 
   if (Serial.available() > 0)
   {
@@ -266,9 +220,37 @@ void loop()
       }
 
       break;
+      case 'v':
+      case 'V':
+        
+        // rgb
+        num_valv = Serial.parseInt();
+        x = Serial.parseInt();
+        switch(num_valv)
+        {
+          // r
+          case 1:
+            analogWrite(PIN_LED_R, x > 0? (x > LED_MAXV_R? LED_MAXV_R : x  ) : 0 );
+          break;
+          // g
+          case 2:
+            analogWrite(PIN_LED_G, x > 0? (x > LED_MAXV_G? LED_MAXV_G : x  ) : 0 );
+          break;
+          // b
+          case 3:
+            analogWrite(PIN_LED_B, x > 0? (x > LED_MAXV_B? LED_MAXV_B : x  ) : 0 );
+          break;
+        }
+
+      break;
     }
   }
 
+/*
+
+   
+
+      */
   for (uint8_t i = 0; i < NUM_VALVULAS; i++)
   {
     misValvulas[i]->callback();
@@ -306,42 +288,6 @@ void loop()
   }
 
   /*
-
-
-    //SerialCommunication_receive_int(cm, nArgs);
-    cmode = SerialCommunication_getMode();
-
-    //display.clearDisplay();
-    //display.setTextSize(1);
-    //.setTextColor( SSD1306_WHITE);
-    //display.setCursor(0,0);
-    //for (int i = 1; i < nArgs; i++) {
-    //  display.println(cmode);
-    //  display.display();
-    //}
-
-    if(cmode == 'r')
-    {
-      Serial.println(millis());
-    }
-
-    if(cmode == 'a')
-    {
-      SerialCommunication_receive_int(data, nArgs);
-
-    }
-    */
-  /*
-    //Serial.println(sensor1.readCalibratedValue());
-    Serial.print(sensor1.readCalibratedValue());
-    Serial.print(" ");
-    Serial.print(sensor2.readCalibratedValue());
-    Serial.print(" ");
-    Serial.println(sensor3.readCalibratedValue());
-
-    delay(150);
-
-    */
    for(uint8_t i = 0; i < NUM_VALVULAS; i++)
    {
     if(misValvulas[i]-> getEmergency() == true)
@@ -350,9 +296,10 @@ void loop()
     }
     
    }
+  
+  */
   }
-
-  if(State == S_ERROR_PARADA_EMERGENCIA || State == S_ERROR_STOPAUTO)
+  if(State == S_ERROR_PARADA_EMERGENCIA)
   {
     digitalWrite(13, !digitalRead(13));
     delay(100);

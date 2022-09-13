@@ -45,7 +45,7 @@ void Valvula::fill_millis(uint32_t time)
    final_time = time;
 
    state = S_FILLING;
-   actual_pressure+= time;
+   
 
 }
 
@@ -57,7 +57,7 @@ void Valvula::emptyng_millis(u_int32_t time)
     final_time = time;
 
     state = S_EMPTYING;
-    actual_pressure = actual_pressure - ((int) ((float) (time * io_multiplier)));
+    
 }
 
 void Valvula::callback()
@@ -72,12 +72,7 @@ void Valvula::callback()
         }
     }
 
-    if(actual_pressure > MAX_PRESSURE)
-    {
-        state = S_EMERGENCY_STOP;
-        this->alAire();
-        emergency_halted = true;
-    }
+    
 }
 
 

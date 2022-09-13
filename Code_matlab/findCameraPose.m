@@ -8,7 +8,7 @@ img = snapshot(cam);
 
 % Deteccion del patron
 [imagePoints,boardSize] = detectCheckerboardPoints(im);
-squareSize = 25;
+squareSize = 20;
 worldPoints = generateCheckerboardPoints(boardSize, squareSize);
 
 [rotationMatrix, translationVector] = extrinsics(imagePoints,worldPoints,cameraPar);

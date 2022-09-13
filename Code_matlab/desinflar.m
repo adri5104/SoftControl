@@ -4,5 +4,6 @@ function desinflar(obj, millispadesinflar)
         string2send = string2send + ',' + num2str(-millispadesinflar) ;
     end
     writeline(obj, string2send);
+    
 
 end
