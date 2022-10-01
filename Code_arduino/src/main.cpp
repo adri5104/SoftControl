@@ -11,17 +11,15 @@ Robot::stretchSensor sensor1(A0);
 Robot::stretchSensor sensor2(A1);
 Robot::stretchSensor sensor3(A2);
 
+// Modo normal
 modos State = S_NORMAL;
 
 // display
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-int nArgs = 4;
-int data[4];
-int mode;
+
 const uint32_t calibration_millis = 5000;
-#define MODE_PUBLISH 0
-#define MODE_RECEIVE 1
+
 
 // Variable de estado
 char cmode;
@@ -45,11 +43,17 @@ void emergency_stop_callback()
 void setup()
 {
 
+  // Comunicacion con el PC
   Serial.begin(9600);
+
+  // Comunicacion con ESP32 (Interfaz wifi para desarollo)
   Serial2.begin(9600);
+
+  // Inicializamos el display y ponemos un mensaje
   Display_init(display);
   Display_println(display, "Hello, world!");
   
+  // Inicializamos los pines de la marca de la vision por omputador
   pinMode(PIN_LED_R, OUTPUT);
   pinMode(PIN_LED_G, OUTPUT);
   pinMode(PIN_LED_B, OUTPUT);
@@ -58,20 +62,23 @@ void setup()
   //attachInterrupt(digitalPinToInterrupt( EMRGY_PIN), emergency_stop_callback, CHANGE);
   pinMode(EMRGY_PIN, INPUT_PULLUP);
 
-
+  // Instanciamos las valvulas
   for (int i = 0; i < NUM_VALVULAS; i++)
   {
     misValvulas[i] = new Valvula(PIN_32_ARRAY[i], PIN_22_ARRAY[i]);
   }
 
+  // Inicilaizamos las valvulas
   for (int i = 0; i < NUM_VALVULAS; i++)
   {
     misValvulas[i]->init();
   }
 
-  pinMode(13, OUTPUT);
+
+  pinMode(LED_BUILTIN, OUTPUT);
   pinMode(2, OUTPUT);
 
+  // Inicializamos los sensores
   digitalWrite(LED_BUILTIN, HIGH);
   sensor1.init();
   sensor2.init();
@@ -80,14 +87,16 @@ void setup()
   t = millis();
 
   /*
+  // Calibracion de los sensores
   while(millis() - t < calibration_millis) {
     sensor1.calibrate();
     sensor2.calibrate();
     sensor3.calibrate();
   }
   */
-
   digitalWrite(LED_BUILTIN, LOW);
+
+  // Se imprimen por serial los valores calibrados de los sensores
   Serial.print(sensor1.getMaxCalibratedValue());
   Serial.print(" ");
   Serial.println(sensor1.getMinCalibratedValue());
@@ -100,6 +109,8 @@ void setup()
   Serial.println("Calibration done");
 
   t = millis();
+
+  // Modo normal
   State = S_NORMAL;
   // delay(1000);
 }
@@ -116,7 +127,7 @@ void loop()
     op = Serial.read();
     int num_valv;
     int x;
-    char aux;
+    float p;
     int buffer[NUM_VALVULAS + 1];
     switch (op)
     {
@@ -153,37 +164,9 @@ void loop()
       misValvulas[num_valv]->emptyng_millis((uint16_t)x);
       break;
 
-    case 'l':
-      digitalWrite(LED_BUILTIN, HIGH);
-      for (int i = 0; i < NUM_VALVULAS; i++)
-      {
-        misValvulas[i]->Presion();
-        Serial.println(i);
-        delay(200);
-      }
-      break;
-
-    case 'k':
-      digitalWrite(LED_BUILTIN, LOW);
-      for (int i = 0; i < NUM_VALVULAS; i++)
-      {
-        misValvulas[i]->Cerrada();
-        Serial.println(i);
-        delay(200);
-      }
-      break;
-
-    case 'm':
-      digitalWrite(LED_BUILTIN, LOW);
-      for (int i = 0; i < NUM_VALVULAS; i++)
-      {
-        misValvulas[i]->alAire();
-        Serial.println(i);
-        delay(200);
-      }
-      break;
-
+    // Para escribir un dato para todas las valvulas en modo absoluto
     case 'w':
+    
       for (int i = 0; i < NUM_VALVULAS + 1; i++)
       {
         buffer[i] =  Serial.parseInt();
@@ -204,22 +187,13 @@ void loop()
         }
         else
         {
-          switch (buffer[i])
-          {
-          case 0:
-            misValvulas[i - 1]->Cerrada();
-            break;
-          case 1:
-            misValvulas[i - 1]->alAire();
-            break;
-          case 2:
-            misValvulas[i - 1]->Presion();
-            break;
-          }
+          misValvulas[i - 1] -> relC(buffer[i]);
         }
       }
 
       break;
+
+      // Para cambiar el brillo de las luces r,g,b de la marca de la vision por computador
       case 'v':
       case 'V':
         
@@ -243,19 +217,63 @@ void loop()
         }
 
       break;
+
+     
+
+      // Para cambiar la presion maxima en modo relativo
+      case 'l':
+        p = Serial.parseFloat();
+        for (int i = 0; i < NUM_VALVULAS; i++)
+        {
+          misValvulas[i] ->  set_max_rel_pressure(p);
+        }
+
+      break;
+
+      // Para cambiar ratio inflado/ desinflado
+      case 'm':
+        p = Serial.parseFloat();
+        for (int i = 0; i < NUM_VALVULAS; i++)
+        {
+          misValvulas[i] ->  set_mult(p);
+        }
+
+      break;
+
+    // Modo relativo en una sola valvula
+    case 'x':
+      num_valv = Serial.parseInt();
+      x = Serial.parseInt();
+      misValvulas[num_valv]->relC(x);
+      break;
+
+    case 'k':
+      
+      for(int i = 0; i < NUM_VALVULAS; i++)
+      {
+        int pres = Serial.parseInt();
+        misValvulas[i]->relC( pres);
+        Serial.print(i);
+        Serial.print(" ");
+        Serial.println(pres);
+
+        delay(2);
+      }
+      
+    break;
+
+    
     }
   }
 
-/*
 
-   
-
-      */
+  // Callback de las valvulas   
   for (uint8_t i = 0; i < NUM_VALVULAS; i++)
   {
     misValvulas[i]->callback();
   }
 
+  // Comunicacion con ESP32
   if (Serial2.available() > 0)
   {
 
@@ -287,7 +305,8 @@ void loop()
     }
   }
 
-  /*
+  
+  // Comprobamos si alguna valvula ha entrado en modo de parada de emergencia
    for(uint8_t i = 0; i < NUM_VALVULAS; i++)
    {
     if(misValvulas[i]-> getEmergency() == true)
@@ -297,12 +316,34 @@ void loop()
     
    }
   
-  */
+  
   }
-  if(State == S_ERROR_PARADA_EMERGENCIA)
+ 
+  
+
+
+  if(State == S_ERROR_STOPAUTO)
   {
+    // Parpadea el led
     digitalWrite(13, !digitalRead(13));
     delay(100);
+
+    if( Serial.available() > 0)
+    {
+      char op = Serial.read();
+
+      // Rearmamos
+      if(op == 'R')
+      {
+        for (int i = 0; i < NUM_VALVULAS; i++)
+        {
+          misValvulas[i] -> rearmar();
+          State = S_NORMAL;
+        }
+      }
+
+    }
+
   }
 
   

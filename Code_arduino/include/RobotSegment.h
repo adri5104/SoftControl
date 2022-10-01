@@ -2,9 +2,12 @@
 #define ROBOTSEGMENT_H
 
 #include <Arduino.h>
+#include <Valvula.h>
 
 namespace Robot
 {
+
+    const uint8_t __NUM_VALVULAS__ = 9;
 
     struct v_pinout
     {
@@ -56,6 +59,9 @@ namespace Robot
                 return min_value;
             };
     };
+
+
+    
 
 };
 

@@ -41,6 +41,7 @@
     };
 
     const uint8_t EMRGY_PIN = 9;
+    const uint8_t LED_PIN = 0;
 
     const uint8_t PIN_LED_R = 2;
     const uint8_t PIN_LED_G = 3;
