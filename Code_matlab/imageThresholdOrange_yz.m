@@ -1,4 +1,4 @@
-function [BW,maskedRGBImage] = imageThresholdOrange_yz(RGB)
+    function [BW,maskedRGBImage] = imageThresholdOrange_yz(RGB)
 %createMask  Threshold RGB image using auto-generated code from colorThresholder app.
 %  [BW,MASKEDRGBIMAGE] = createMask(RGB) thresholds image RGB using
 %  auto-generated code from the colorThresholder app. The colorspace and

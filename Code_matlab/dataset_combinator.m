@@ -22,7 +22,7 @@ if nargin > 1 && nargin <= 2
         data_p.temp_amb = arg1.temp_amb;
         data_p.maxRpressure = arg1.maxRpressure;
         data_p.nummuestras = arg1.nummuestras + arg2.nummuestras;
-        data_p.elapsed_time = arg1.elapsed_time + arg2.elapsed_time;
+      
         data_p.controlporcentual = arg1.controlporcentual;
 
         
